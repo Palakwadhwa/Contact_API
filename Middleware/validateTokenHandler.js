@@ -1,20 +1,20 @@
 import jwt from "jsonwebtoken";
 
-export const validateToken = (req,res,next)=>{
+export const validateToken = (req, res, next) => {
 
     let token;
 
     const authHeader = req.headers.authorization || req.headers.Authorization;
 
-    if(authHeader && authHeader.startsWith("Bearer")){
+    if (authHeader && authHeader.startsWith("Bearer")) {
 
         token = authHeader.split(" ")[1];
 
-        jwt.verify(token,process.env.JWT,(err,decoded)=>{
+        jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
 
-            if(err){
+            if (err) {
                 return res.status(401).json({
-                    message:"User not authorized"
+                    message: "User not authorized"
                 });
             }
 
@@ -24,10 +24,9 @@ export const validateToken = (req,res,next)=>{
         });
     }
 
-    if(!token){
+    if (!token) {
         return res.status(401).json({
-            message:"Token missing"
+            message: "Token missing"
         });
     }
-
 };

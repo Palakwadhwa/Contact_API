@@ -1,11 +1,10 @@
 import { Contact } from "../Models/Contact.js";
 
-
 // GET CONTACTS
-export const getContacts = async (req,res)=>{
+export const getContacts = async (req, res) => {
 
     const contacts = await Contact.find({
-        user_id:req.user.id
+        user_id: req.user.id
     });
 
     res.status(200).json(contacts);
@@ -14,23 +13,21 @@ export const getContacts = async (req,res)=>{
 
 
 // CREATE CONTACT
-export const createContact = async (req,res)=>{
+export const createContact = async (req, res) => {
 
-    const {name,email,phone} = req.body;
+    const { name, email, phone } = req.body;
 
-    if(!name || !email || !phone){
+    if (!name || !email || !phone) {
         return res.status(400).json({
-            message:"All fields required"
+            message: "All fields required"
         });
     }
 
     const contact = await Contact.create({
-
         name,
         email,
         phone,
-        user_id:req.user.id
-
+        user_id: req.user.id
     });
 
     res.status(201).json(contact);
@@ -39,22 +36,26 @@ export const createContact = async (req,res)=>{
 
 
 // UPDATE CONTACT
-export const updateContact = async (req,res)=>{
+export const updateContact = async (req, res) => {
 
     const contact = await Contact.findById(req.params.id);
 
-    if(!contact){
+    if (!contact) {
         return res.status(404).json({
-            message:"Contact not found"
+            message: "Contact not found"
+        });
+    }
+
+    if (contact.user_id.toString() !== req.user.id) {
+        return res.status(403).json({
+            message: "User not authorized"
         });
     }
 
     const updatedContact = await Contact.findByIdAndUpdate(
-
         req.params.id,
         req.body,
-        {new:true}
-
+        { new: true }
     );
 
     res.status(200).json(updatedContact);
@@ -63,19 +64,25 @@ export const updateContact = async (req,res)=>{
 
 
 // DELETE CONTACT
-export const deleteContact = async (req,res)=>{
+export const deleteContact = async (req, res) => {
 
     const contact = await Contact.findById(req.params.id);
 
-    if(!contact){
+    if (!contact) {
         return res.status(404).json({
-            message:"Contact not found"
+            message: "Contact not found"
         });
     }
 
-    await Contact.deleteOne({_id:req.params.id});
+    if (contact.user_id.toString() !== req.user.id) {
+        return res.status(403).json({
+            message: "User not authorized"
+        });
+    }
+
+    await Contact.deleteOne({ _id: req.params.id });
 
     res.status(200).json({
-        message:"Contact deleted"
+        message: "Contact deleted"
     });
 };
