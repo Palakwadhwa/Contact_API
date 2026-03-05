@@ -1,4 +1,4 @@
-import { Contact } from "../Models/contact.js";
+import { Contact } from "../Models/Contact.js";
 
 
 // GET CONTACTS
