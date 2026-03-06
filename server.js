@@ -1,11 +1,11 @@
 import express from "express";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
-
+dotenv.config();
 import userRoutes from "./Routes/user.js";
 import contactRoutes from "./Routes/contact.js";
 
-dotenv.config();
+// dotenv.config();
 
 const app = express();
 
